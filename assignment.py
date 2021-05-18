@@ -168,7 +168,7 @@ def edgedetection(image):
 															##Storing the path traced to get the least energy in a list.
 
 
-def alttracingpath(energymatrix,image):
+def tracingpath(energymatrix,image):
 	W=(len(energymatrix[0]))
 	H=(len(energymatrix))
 	a=min(energymatrix[H-1])
@@ -231,7 +231,7 @@ f=edgedetection(e)
 writepgm(f,'energy.pgm')
 g=readpgm('energy.pgm')
 h=readpgm(filename)
-i=alttracingpath(g,h)
+i=tracingpath(g,h)
 writepgm(i,'final.pgm')
 
 		
