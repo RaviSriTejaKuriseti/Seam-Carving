@@ -76,9 +76,7 @@ def average(image):
 																				##Making an average array.
 	return L
 			
-a=readpgm('flower_gray.pgm')
-b=average(a)
-writepgm(b,'average.pgm')
+
 
 def gradient_image(image):
 	W=(len(image[0]))
@@ -144,9 +142,7 @@ def gradient_image(image):
 				
 	return grad
 
-c=readpgm('flower_gray.pgm')
-d=gradient_image(c)
-writepgm(d,'edge.pgm')
+
 
 def edgedetection(image):
 	W=(len(image[0]))
@@ -166,67 +162,77 @@ def edgedetection(image):
 
 	return Minindex											##Forming the energy array using dynamic programming.
 
+
+
+
+															##Storing the path traced to get the least energy in a list.
+
+
+def alttracingpath(energymatrix,image):
+	W=(len(energymatrix[0]))
+	H=(len(energymatrix))
+	a=min(energymatrix[H-1])
+	tracker=[[False for c in range(W)] for d in range(H)]
+	finl=[[0 for c in range(W)] for d in range(H)]
+	for J in range(0,W):
+		if(energymatrix[H-1][J]==a):
+			tracker[H-1][J]=True
+	
+	for i in range(H-1,0,-1):
+		for j in range(0,W):
+			if(tracker[i][j]==True):
+				if (j!=0) and (j!=W-1):
+					p=min(energymatrix[i-1][j-1],energymatrix[i-1][j],energymatrix[i-1][j+1])
+					if(p==energymatrix[i-1][j-1]):
+						tracker[i-1][j-1]=True
+					if(p==energymatrix[i-1][j]) :
+						tracker[i-1][j]=True
+					if(p==energymatrix[i-1][j+1]):
+						tracker[i-1][j+1]=True
+				elif(j==0):
+					p=min(energymatrix[i-1][j],energymatrix[i-1][j+1])
+					if(p==energymatrix[i-1][j]) :
+						tracker[i-1][j]=True
+					if(p==energymatrix[i-1][j+1]):
+						tracker[i-1][j+1]=True
+				elif(j==W-1):
+					p=min(energymatrix[i-1][j-1],energymatrix[i-1][j])
+					if(p==energymatrix[i-1][j-1]):
+						tracker[i-1][j-1]=True
+					if(p==energymatrix[i-1][j]) :
+						tracker[i-1][j]=True                          #Marking the particular grids that should be whitened
+
+	for u in range(0,H):
+		for v in range(0,W):
+			if(tracker[u][v]):
+				finl[u][v]=255
+			else:
+				finl[u][v]=image[u][v]
+	return finl
+
+
+		
+
+
+
+
+
+
+
+filename=str(input("Enter the name of the PGM-File:"))
+a=readpgm(filename)
+b=average(a)
+writepgm(b,'average.pgm')
+c=readpgm(filename)
+d=gradient_image(c)
+writepgm(d,'edge.pgm')
 e=readpgm('edge.pgm')
 f=edgedetection(e)
 writepgm(f,'energy.pgm')
-
-def careadd(L,e):
-	if e not in L:
-		L.append(e)										
-
-def tracingpath(image,i,L):
-	W=len(image[0])
-	if(i==0):
-		return L
-	else:
-		for e in L:
-			if(e[0]==i):
-				j=e[1]
-				if (j!=0) and (j!=W-1):
-					p=min(image[i-1][j-1],image[i-1][j],image[i-1][j+1])
-					if(p==image[i-1][j-1]):
-						careadd(L,([i-1,j-1]))
-					if(p==image[i-1][j]) :
-						careadd(L,([i-1,j]))
-					if(p==image[i-1][j+1]):
-						careadd(L,([i-1,j+1]))
-				if(j==0):
-					p=min(image[i-1][j],image[i-1][j+1])
-					if(p==image[i-1][j]) :
-						careadd(L,([i-1,j]))
-					if(p==image[i-1][j+1]) :
-						careadd(L,([i-1,j+1]))
-				if(j==W-1):
-					p=min(image[i-1][j-1],image[i-1][j])
-					if(p==image[i-1][j-1]) :
-						careadd(L,([i-1,j-1]))
-					if(p==image[i-1][j]) :
-						careadd(L,([i-1,j]))
-		return tracingpath(image,i-1,L)	
-															##Storing the path traced to get the least energy in a list.
-
-def white(image):
-	a=min(image[len(image)-1])
-	M=[]
-	for j in range(0,len(image[0])):
-		if(image[len(image)-1][j]==a):
-			M.append([len(image)-1,j])
-	return tracingpath(image,len(image)-1,M)					##Returning the stored path.
-
-def finalize(image,N):
-	for e in N:
-		image[e[0]][e[1]]=255									##Modifying the pixels in the initial image.
-	return image
-
 g=readpgm('energy.pgm')
-h=readpgm('flower_gray.pgm')
-i=finalize(h,white(g))
+h=readpgm(filename)
+i=alttracingpath(g,h)
 writepgm(i,'final.pgm')
-
-
-
-
-	
 
 		
 
