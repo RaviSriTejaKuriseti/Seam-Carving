@@ -234,6 +234,9 @@ h=readpgm(filename)
 i=tracingpath(g,h)
 writepgm(i,'final.pgm')
 
+#Time Complexity=O(WH)
+#Space Complexity=O(WH)
+
 		
 
 		
