@@ -1,6 +1,6 @@
 # Seam-Carving Algorithm
-(*Implemented in Python*)<br>
-This is method to shorten image by removing selective pixels.<br>
+
+This is a method used to reduce the size of image by removing selective pixels.<br>
 For more details refer this link https://en.wikipedia.org/wiki/Seam_carving <br>
 The principle involved is Dynamic-Programming.<br>
 For working of program, run the program in terminal and enter the name of the pgm file for which you want to get the white paths.<br> 
